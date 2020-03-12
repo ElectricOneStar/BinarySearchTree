@@ -3,8 +3,8 @@
 #include "Node.h"
 using namespace std;
 Node::Node(){
-  //  right = NULL;
-  //left = NULL;
+    right = NULL;
+  left = NULL;
   //pdata = NULL;
 }
 void Node::setRight(Node* inputRight){
