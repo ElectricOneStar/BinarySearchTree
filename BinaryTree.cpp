@@ -215,14 +215,20 @@ void Print(Node* header, int length, int count, int i){
 
 void Search(Node* header, int* searchData, bool* exists){
   //cout << "search" << endl;
-       if((*header).getRight() != NULL){
-	 Search((*header).getRight(), searchData, exists);
-       }
-       if((*(*header).getData()) == (*searchData)){
+         if((*(*header).getData()) == (*searchData)){
 	 (*exists) = true;
        }
-       if((*header).getLeft() != NULL){
+
+  if((*header).getRight() != NULL && (*searchData) > (*(*header).getData())){
 	 Search((*header).getRight(), searchData, exists);
+       }
+  /*
+  if((*(*header).getData()) == (*searchData)){
+	 (*exists) = true;
+       }
+  */
+       if((*header).getLeft() != NULL && (*searchData) <= (*(*header).getData())){
+	 Search((*header).getLeft(), searchData, exists);
        }
 }
 void maxSize(char* input, int* size){
