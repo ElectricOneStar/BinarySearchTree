@@ -8,9 +8,11 @@ Node::Node(){
   //pdata = NULL;
 }
 Node::~Node(){
-  delete right;
-  delete left;
-  delete data;
+
+  right = NULL;
+   left = NULL;
+  data = NULL;
+  
 }
 void Node::setRight(Node* inputRight){
   right = inputRight;

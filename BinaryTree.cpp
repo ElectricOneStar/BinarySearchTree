@@ -10,7 +10,7 @@ int* Parce(char* input, int* index, int* counterOne, int* wordCounter, int* parc
 void BuildTree(char* input, int* index, int* counterOne, int* wordCounter, int* parced, int* size, Node* header);
 void Add(Node* header, Node* add);
 //void Subtract();
-void Subtract(Node* header, int* deleteThis);
+void Subtract(Node* header, int* deleteThis, Node* previous);
 void Print(Node* header, int length, int count, int i);
 //void Search();
 void Search(Node* header, int* searchData, bool* exists);
@@ -98,8 +98,9 @@ int main(){ // initialization of variables
       	Search(header, Parce(subtractInput, index, counterOne, wordCounter, parced), exists);
 	if((*exists) == true){ // it exists
 	  // cout << (*Parce(searchInput, index, counterOne, wordCounter, parced)) << " exists in the tree" << endl;
-	  Subtract(header, Parce(subtractInput, index, counterOne, wordCounter, parced));
-	  //(*size)--;
+	  //(*(*previous).getData()) = (*(*header).getData());
+	  Subtract(header, Parce(subtractInput, index, counterOne, wordCounter, parced), header);
+	  // (*size)--;
 	  cout << "deleted" << endl;
 	}
 	if((*exists) == false){ // it does not exist
@@ -209,7 +210,7 @@ void Add(Node* header, Node* add){ // this funcitons adds a node to the list
     (*header).setRight(add);
   } // add it to the end
 }
-void Subtract(Node* header, int* deleteThis){ // this function deletes a node from the list
+void Subtract(Node* header, int* deleteThis, Node* previous){ // this function deletes a node from the list
   // cout << "subtract" << endl;
    if((*header).getRight() == NULL && (*header).getLeft() == NULL){
      // if((*(*(*header).getRight()).getData()) == (*deleteThis) || (*(*(*header).getLeft()).getData()) == (*deleteThis)){
@@ -217,6 +218,12 @@ void Subtract(Node* header, int* deleteThis){ // this function deletes a node fr
      cout << "no child" << endl;
     cout << "Parent" << (*(*header).getData()) << endl;
     //}
+    if((*(*header).getData()) > (*(*previous).getData())){
+    (*previous).setRight(NULL);
+    }
+    else{
+      (*previous).setLeft(NULL);
+    }
     delete header;
     return;
      }
@@ -225,12 +232,26 @@ void Subtract(Node* header, int* deleteThis){ // this function deletes a node fr
      if((*header).getRight() != NULL && (*(*header).getData()) == (*deleteThis)){
      cout << "one right child" << endl;
     cout << "Parent" << (*(*header).getData()) << endl;
+    if((*(*header).getData()) > (*(*previous).getData())){
+      (*previous).setRight((*header).getRight());
+    }
+    else{
+      (*previous).setLeft((*header).getRight());
+    }
+    delete header;
    
     return;
      }
      if((*header).getLeft() != NULL && (*(*header).getData()) == (*deleteThis)){
      cout << "one left child" << endl;
     cout << "Parent" << (*(*header).getData()) << endl;
+        if((*(*header).getData()) > (*(*previous).getData())){
+      (*previous).setRight((*header).getLeft());
+    }
+    else{
+      (*previous).setLeft((*header).getLeft());
+    }
+	delete header;
     return;
      }
 
@@ -246,10 +267,10 @@ void Subtract(Node* header, int* deleteThis){ // this function deletes a node fr
    }
   
    if((*header).getRight() != NULL && (*deleteThis) > (*(*header).getData())){
-	 Subtract((*header).getRight(), deleteThis);
+     Subtract((*header).getRight(), deleteThis, header);
    }
        if((*header).getLeft() != NULL && (*deleteThis) <= (*(*header).getData())){
-	 Subtract((*header).getLeft(), deleteThis);
+	 Subtract((*header).getLeft(), deleteThis, header);
        }
 
 }
