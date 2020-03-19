@@ -7,6 +7,7 @@ using namespace std;
 class Node{
  public:
   Node();
+  ~Node();
   void setRight(Node* inputRight);
   void setLeft(Node* inputLeft);
   void setData(int* inputData);

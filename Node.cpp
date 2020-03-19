@@ -7,6 +7,11 @@ Node::Node(){
   left = NULL;
   //pdata = NULL;
 }
+Node::~Node(){
+  delete right;
+  delete left;
+  delete data;
+}
 void Node::setRight(Node* inputRight){
   right = inputRight;
 }

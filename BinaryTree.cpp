@@ -37,6 +37,7 @@ int main(){ // initialization of variables
   //(*one).setData(Parce(input, index, counterOne, wordCounter, parced));
   char* searchInput = new char[20];
   char* subtractInput = new char[20];
+  Node* previous = new Node;
   /*
   int* ones = new int;
   int* twos = new int;
@@ -98,6 +99,7 @@ int main(){ // initialization of variables
 	if((*exists) == true){ // it exists
 	  // cout << (*Parce(searchInput, index, counterOne, wordCounter, parced)) << " exists in the tree" << endl;
 	  Subtract(header, Parce(subtractInput, index, counterOne, wordCounter, parced));
+	  //(*size)--;
 	  cout << "deleted" << endl;
 	}
 	if((*exists) == false){ // it does not exist
@@ -209,17 +211,45 @@ void Add(Node* header, Node* add){ // this funcitons adds a node to the list
 }
 void Subtract(Node* header, int* deleteThis){ // this function deletes a node from the list
   // cout << "subtract" << endl;
-  if((*header).getRight() != NULL && (*header).getLeft() != NULL){
-  if((*(*(*header).getRight()).getData()) == (*deleteThis) || (*(*(*header).getLeft()).getData()) == (*deleteThis)){
-    cout << "Parent" << (*(*header).getData());
-  }
-  }
+   if((*header).getRight() == NULL && (*header).getLeft() == NULL){
+     // if((*(*(*header).getRight()).getData()) == (*deleteThis) || (*(*(*header).getLeft()).getData()) == (*deleteThis)){
+     if((*(*header).getData()) == (*deleteThis)){
+     cout << "no child" << endl;
+    cout << "Parent" << (*(*header).getData()) << endl;
+    //}
+    delete header;
+    return;
+     }
+   }
+   if((*header).getRight() == NULL && (*header).getLeft() != NULL || (*header).getRight() != NULL && (*header).getLeft() == NULL){
+     if((*header).getRight() != NULL && (*(*header).getData()) == (*deleteThis)){
+     cout << "one right child" << endl;
+    cout << "Parent" << (*(*header).getData()) << endl;
+   
+    return;
+     }
+     if((*header).getLeft() != NULL && (*(*header).getData()) == (*deleteThis)){
+     cout << "one left child" << endl;
+    cout << "Parent" << (*(*header).getData()) << endl;
+    return;
+     }
+
+   }
+   if((*header).getRight() != NULL && (*header).getLeft() != NULL){
+          if((*(*header).getData()) == (*deleteThis)){
+     cout << "both child" << endl;
+    cout << "Parent" << (*(*header).getData()) << endl;
+    //}
+    return;
+     }
+
+   }
   
    if((*header).getRight() != NULL && (*deleteThis) > (*(*header).getData())){
 	 Subtract((*header).getRight(), deleteThis);
    }
        if((*header).getLeft() != NULL && (*deleteThis) <= (*(*header).getData())){
-	 Subtract((*header).getRight(), deleteThis);
+	 Subtract((*header).getLeft(), deleteThis);
        }
 
 }
