@@ -15,6 +15,7 @@ void Print(Node* header, int length, int count, int i);
 //void Search();
 void Search(Node* header, int* searchData, bool* exists);
 void maxSize(char* input, int* size);
+Node* getRightMost(Node* header);
 int main(){ // initialization of variables
   char* inputType = new char[20];
   char* input = new char[500];
@@ -260,6 +261,15 @@ void Subtract(Node* header, int* deleteThis, Node* previous){ // this function d
           if((*(*header).getData()) == (*deleteThis)){
      cout << "both child" << endl;
     cout << "Parent" << (*(*header).getData()) << endl;
+   if((*(*header).getData()) > (*(*previous).getData())){
+     (*previous).setRight(getRightMost((*header).getLeft()));
+     (*previous).setLeft((*header).getRight());
+   }
+    else{
+      (*previous).setLeft(getRightMost((*header).getLeft()));
+      (*previous).setRight((*header).getLeft());
+    }
+
     //}
     return;
      }
@@ -320,5 +330,13 @@ void maxSize(char* input, int* size){ // this function gets the size of the tree
     if(input[i] == ' '){ // every time there is a space there should be a new node
       (*size)++;
     }
+  }
+}
+Node* getRightMost(Node* header){
+  if((*header).getRight() == NULL){
+    return header;
+  }
+  else{
+    getRightMost((*header).getRight());
   }
 }
