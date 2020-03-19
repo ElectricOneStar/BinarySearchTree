@@ -262,14 +262,21 @@ void Subtract(Node* header, int* deleteThis, Node* previous){ // this function d
      cout << "both child" << endl;
     cout << "Parent" << (*(*header).getData()) << endl;
    if((*(*header).getData()) > (*(*previous).getData())){
+     //(*getRightMost((*header).getLeft())).setRight((*previous).getLeft());
      (*previous).setRight(getRightMost((*header).getLeft()));
-     (*previous).setLeft((*header).getRight());
+     (*(*previous).getRight()).setRight((*header).getRight());
+     //(*previous).setRight(getRightMost(header));
+     // (*header)
+     //(*previous).setLeft((*header).getRight());
+     //(*(*previous).get()).setRight();
    }
     else{
       (*previous).setLeft(getRightMost((*header).getLeft()));
-      (*previous).setRight((*header).getLeft());
+      (*(*previous).getLeft()).setRight((*header).getRight());
+      // (*previous).setLeft(getRightMost(header));
+      // (*previous).setRight((*header).getLeft());
     }
-
+   delete header;
     //}
     return;
      }
