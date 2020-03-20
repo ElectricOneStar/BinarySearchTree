@@ -2,6 +2,7 @@
 Node cpp file that has a right and left node. It also has a data value. There are getters and setters for each item.
  */
 #include<iostream>
+#include <cstdlib>
 #include<cstring>
 #include "Node.h"
 using namespace std;
