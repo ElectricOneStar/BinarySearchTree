@@ -2,6 +2,7 @@
 Binary Search Tree by Andrew Thomas 3/18/20. this code will take either a user input or a file input of 3 digit numbers separated by spaces. Then it will parce those numbers and put them in a tree. Once the tree is built the user can add, search, or delete nodes from the tree. The user can also print the tree and exit the program by inputting quit
  */
 #include <iostream>
+#include <cstdlib>
 #include<cstring>
 #include<fstream>
 #include "Node.h"
