@@ -3,6 +3,7 @@ Header Node file by Andrew Thomas 3/19/20. This is a node with a right and left 
  */
 #ifndef NODE_H
 #define NODE_H
+#include <cstdlib>
 #include <iostream> 
 #include<cstring>
 using namespace std;
