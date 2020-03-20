@@ -10,7 +10,7 @@ int* Parce(char* input, int* index, int* counterOne, int* wordCounter, int* parc
 void BuildTree(char* input, int* index, int* counterOne, int* wordCounter, int* parced, int* size, Node* header);
 void Add(Node* header, Node* add);
 //void Subtract();
-void Subtract(Node* header, int* deleteThis, Node* previous);
+void Subtract(Node* header, int* deleteThis, Node* previous, int* DCounter, int* skip, int* special);
 void Print(Node* header, int length, int count, int i);
 //void Search();
 void Search(Node* header, int* searchData, bool* exists);
@@ -39,6 +39,11 @@ int main(){ // initialization of variables
   char* searchInput = new char[20];
   char* subtractInput = new char[20];
   Node* previous = new Node;
+  int* DCounter = new int;
+  (*DCounter) = 0;
+  int* skip = new int;
+  (*skip) = 0;
+  int* special = new int;
   /*
   int* ones = new int;
   int* twos = new int;
@@ -96,12 +101,18 @@ int main(){ // initialization of variables
       cin.get(subtractInput, 20); // which node do you want to delete
       cin.clear();
       cin.ignore();
-      	Search(header, Parce(subtractInput, index, counterOne, wordCounter, parced), exists);
+      Search(header, Parce(subtractInput, index, counterOne, wordCounter, parced), exists);
 	if((*exists) == true){ // it exists
 	  // cout << (*Parce(searchInput, index, counterOne, wordCounter, parced)) << " exists in the tree" << endl;
 	  //(*(*previous).getData()) = (*(*header).getData());
-	  Subtract(header, Parce(subtractInput, index, counterOne, wordCounter, parced), header);
+	  Subtract(header, Parce(subtractInput, index, counterOne, wordCounter, parced), header, DCounter, skip, special);
 	  // (*size)--;
+	  if((*special) == 1){
+	    (*(*header).getData()) = (*skip);
+	  }
+	  (*special) = 0;
+	  (*skip) = 0;
+	  (*DCounter) = 0;
 	  cout << "deleted" << endl;
 	}
 	if((*exists) == false){ // it does not exist
@@ -130,8 +141,13 @@ int main(){ // initialization of variables
       if(strcmp(inputFunction, "PRINT") == 0){ // function that prints the tree in a way that clearly demonstrates the parent and child relationship
 	  //  cout << "print" << endl;
 	  int Length = (*size);
+	  if(header == NULL){
+	    cout << "tree is empty" << endl;
+	  }
+	  else{
 	  Print(header, Length, 0, 1);
-	}
+	  }
+	  }
 	if(strcmp(inputFunction, "QUIT") == 0){ // quit the program
 	  quit = true;
 	}
@@ -211,60 +227,133 @@ void Add(Node* header, Node* add){ // this funcitons adds a node to the list
     (*header).setRight(add);
   } // add it to the end
 }
-void Subtract(Node* header, int* deleteThis, Node* previous){ // this function deletes a node from the list
+void Subtract(Node* header, int* deleteThis, Node* previous, int* DCounter, int* skip, int* special){ // this function deletes a node from the list
   // cout << "subtract" << endl;
    if((*header).getRight() == NULL && (*header).getLeft() == NULL){
      // if((*(*(*header).getRight()).getData()) == (*deleteThis) || (*(*(*header).getLeft()).getData()) == (*deleteThis)){
      if((*(*header).getData()) == (*deleteThis)){
-     cout << "no child" << endl;
-    cout << "Parent" << (*(*header).getData()) << endl;
+       //cout << "no child" << endl;
+     //cout << "Parent" << (*(*header).getData()) << endl;
     //}
-    if((*(*header).getData()) > (*(*previous).getData())){
+    if((*DCounter) == 0){
+      delete header;
+      return;
+    }
+       
+    else if((*(*header).getData()) > (*(*previous).getData())){
     (*previous).setRight(NULL);
     }
     else{
       (*previous).setLeft(NULL);
     }
+    (*DCounter) = 0;
     delete header;
     return;
      }
    }
    if((*header).getRight() == NULL && (*header).getLeft() != NULL || (*header).getRight() != NULL && (*header).getLeft() == NULL){
      if((*header).getRight() != NULL && (*(*header).getData()) == (*deleteThis)){
-     cout << "one right child" << endl;
-    cout << "Parent" << (*(*header).getData()) << endl;
-    if((*(*header).getData()) > (*(*previous).getData())){
+       // cout << "one right child" << endl;
+       // cout << "Parent" << (*(*header).getData()) << endl;
+        if((*DCounter) == 0){
+	  //(*(*header).getData()) = (*(*(*header).getRight()).getData());
+	  (*DCounter) = 1;
+	  (*special) = 1;
+	  (*skip) = (*(*(*header).getRight()).getData());
+	  //  cout << "woah: "<< (*(*(*header).getRight()).getData()) << endl;
+	    Subtract((*header).getRight(), (*(*header).getRight()).getData(), header, DCounter, skip, special);
+	    return;
+    }
+
+	if((*(*header).getData()) > (*(*previous).getData())){
       (*previous).setRight((*header).getRight());
+      //	(*DCounter) = 0;
+      //	(*skip) = 0;
+	delete header;
+	return;
+
     }
-    else{
+     if((*(*header).getData()) <= (*(*previous).getData()) ){
       (*previous).setLeft((*header).getRight());
-    }
-    delete header;
-   
-    return;
-     }
-     if((*header).getLeft() != NULL && (*(*header).getData()) == (*deleteThis)){
-     cout << "one left child" << endl;
-    cout << "Parent" << (*(*header).getData()) << endl;
-        if((*(*header).getData()) > (*(*previous).getData())){
-      (*previous).setRight((*header).getLeft());
-    }
-    else{
-      (*previous).setLeft((*header).getLeft());
-    }
+      //	(*DCounter) = 0;
+	//	(*skip) = 0;
 	delete header;
     return;
+
+    }
+     //(*skip) = 0;
+	//(*DCounter) = 0;
+	//delete header;
+   
+	//  return;
+     }
+     if((*header).getLeft() != NULL && (*(*header).getData()) == (*deleteThis)){
+       //cout << "one left child" << endl;
+       // cout << "Parent" << (*(*header).getData()) << endl;
+        if((*DCounter) == 0){
+	  //cout << "here" << endl;
+	  	  (*DCounter) = 1;
+	  (*special) = 1;
+	  (*skip) = (*(*(*header).getLeft()).getData());
+	  //  cout << "woah: "<< (*(*(*header).getRight()).getData()) << endl;
+	    Subtract((*header).getLeft(), (*(*header).getLeft()).getData(), header, DCounter, skip, special);
+	    return;
+	  // header = (*header).getLeft();
+	  //(*(*header).getData()) = (*(*(*header).getLeft()).getData());
+	  // (*DCounter) = 1;
+	  //(*skip) = 1;
+	  //	  Subtract(header, (*(*header).getLeft()).getData(), header, DCounter, skip, special);
+	  //return;
+    }
+
+	if((*(*header).getData()) > (*(*previous).getData())){
+      (*previous).setRight((*header).getLeft());
+      	(*DCounter) = 0;
+	delete header;
+    return;
+
+    }
+	if((*(*header).getData()) <= (*(*previous).getData())){
+      (*previous).setLeft((*header).getLeft());
+      	(*DCounter) = 0;
+	
+	delete header;
+    return;
+
+    }
+	//if((*skip) == 1){
+	// (*skip) = 0;
+	  // Subtract((*header).getLeft(), deleteThis, header, DCounter, skip);
+	//	}
+	//(*skip) = 0;
+	//	(*DCounter) = 0;
+	//	delete header;
+	//return;
      }
 
    }
    if((*header).getRight() != NULL && (*header).getLeft() != NULL){
           if((*(*header).getData()) == (*deleteThis)){
-     cout << "both child" << endl;
-    cout << "Parent" << (*(*header).getData()) << endl;
-   if((*(*header).getData()) > (*(*previous).getData())){
+	    // cout << "both child" << endl;
+	    //cout << "Parent" << (*(*header).getData()) << endl;
+    //   (*getRightMost((*header).getLeft())).setLeft(NULL);
+    // (*getRightMost((*header).getLeft())).setRight(NULL);
+
+    if((*DCounter) == 0){
+	  return;
+    }
+    //	(*getRightMost((*header).getLeft())).setLeft(NULL);
+    //	(*getRightMost((*header).getLeft())).setRight(NULL);
+	else if((*(*header).getData()) > (*(*previous).getData())){
      //(*getRightMost((*header).getLeft())).setRight((*previous).getLeft());
-     (*previous).setRight(getRightMost((*header).getLeft()));
-     (*(*previous).getRight()).setRight((*header).getRight());
+	  (*previous).setRight(getRightMost((*header).getLeft()));
+	  (*(*header).getLeft()).setRight(NULL);
+	  // (*(*header).getLeft()).setRight((*(*previous).getLeft()).getLeft());
+	  (*(*header).getLeft()).setRight((*(*previous).getLeft()).getLeft());
+	  (*(*(*header).getLeft()).getRight()).setRight((*(*previous).getLeft()).getRight());
+	  ///(*(*previous).getRight()).setRight(NULL);
+	   (*(*previous).getRight()).setRight((*header).getRight());
+	   (*(*previous).getRight()).setLeft((*header).getLeft());
      //(*previous).setRight(getRightMost(header));
      // (*header)
      //(*previous).setLeft((*header).getRight());
@@ -272,10 +361,16 @@ void Subtract(Node* header, int* deleteThis, Node* previous){ // this function d
    }
     else{
       (*previous).setLeft(getRightMost((*header).getLeft()));
+      (*(*header).getLeft()).setRight(NULL);
+      (*(*header).getLeft()).setRight((*(*previous).getLeft()).getLeft());
+        (*(*(*header).getLeft()).getRight()).setRight((*(*previous).getLeft()).getRight());
       (*(*previous).getLeft()).setRight((*header).getRight());
-      // (*previous).setLeft(getRightMost(header));
+
+      (*(*previous).getLeft()).setLeft((*header).getLeft());
+       //  (*previous).setLeft(getRightMost(header));
       // (*previous).setRight((*header).getLeft());
     }
+   (*DCounter) = 0;
    delete header;
     //}
     return;
@@ -284,10 +379,13 @@ void Subtract(Node* header, int* deleteThis, Node* previous){ // this function d
    }
   
    if((*header).getRight() != NULL && (*deleteThis) > (*(*header).getData())){
-     Subtract((*header).getRight(), deleteThis, header);
+     (*DCounter) = 1;
+     Subtract((*header).getRight(), deleteThis, header, DCounter, skip, special);
    }
        if((*header).getLeft() != NULL && (*deleteThis) <= (*(*header).getData())){
-	 Subtract((*header).getLeft(), deleteThis, header);
+	 (*DCounter) = 1;
+	 Subtract((*header).getLeft(), deleteThis, header, DCounter, skip, special);
+	 
        }
 
 }
